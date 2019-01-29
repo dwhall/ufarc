@@ -49,7 +49,7 @@ class UdpRelayAhsm(ufarc.Ahsm):
 
 
     def waiting(me, event):
-        sig = event.signal
+        sig = event[ufarc.Event.SIG_IDX]
         if sig == ufarc.SIGNAL.ENTRY:
             print("Awaiting a UDP datagram on port {0}.  Try: $ nc -u localhost {0}".format(UDP_PORT))
             return me.handled(me, event)
@@ -66,7 +66,7 @@ class UdpRelayAhsm(ufarc.Ahsm):
 
 
     def relaying(me, event):
-        sig = event.signal
+        sig = event[ufarc.Event.SIG_IDX]
         if sig == ufarc.SIGNAL.ENTRY:
             me.tmr.postEvery(me, 5.000)
             return me.handled(me, event)
@@ -96,7 +96,7 @@ class UdpRelayAhsm(ufarc.Ahsm):
 
 
     def exiting(me, event):
-        sig = event.signal
+        sig = event[ufarc.Event.SIG_IDX]
         if sig == ufarc.SIGNAL.ENTRY:
             print("exiting")
             me.transport.close()

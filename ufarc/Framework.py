@@ -77,8 +77,8 @@ class Framework(object):
         """Posts the event to the message queue of every Ahsm
         that is subscribed to the event's signal.
         """
-        if event.signal in Framework._subscriber_table:
-            for act in Framework._subscriber_table[event.signal]:
+        if event[Event.SIG_IDX] in Framework._subscriber_table:
+            for act in Framework._subscriber_table[event[Event.SIG_IDX]]:
                 act.postFIFO(event)
         # Run to completion
         Framework._event_loop.call_soon_threadsafe(Framework.run)

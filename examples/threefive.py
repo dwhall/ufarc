@@ -15,7 +15,7 @@ class Three(ufarc.Ahsm):
 
 
     def running(me, event):
-        sig = event.signal
+        sig = event[ufarc.Event.SIG_IDX]
         if sig == ufarc.SIGNAL.ENTRY:
             print("three enter")
             me.te.postEvery(me, 3)
@@ -42,7 +42,7 @@ class Five(ufarc.Ahsm):
 
 
     def running(me, event):
-        sig = event.signal
+        sig = event[ufarc.Event.SIG_IDX]
         if sig == ufarc.SIGNAL.ENTRY:
             print("five enter")
             me.te.postEvery(me, 5)

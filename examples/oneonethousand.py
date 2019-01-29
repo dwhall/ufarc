@@ -16,7 +16,7 @@ class Mississippi(ufarc.Ahsm):
 
 
     def counting(me, event):
-        sig = event.signal
+        sig = event[ufarc.Event.SIG_IDX]
         if sig == ufarc.SIGNAL.ENTRY:
             print("counting enter")
             me._count = 0

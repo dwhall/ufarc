@@ -19,7 +19,7 @@ class Iterate(ufarc.Ahsm):
 
 
     def iterating(me, event):
-        sig = event.signal
+        sig = event[ufarc.Event.SIG_IDX]
         if sig == ufarc.SIGNAL.ENTRY:
             print("iterating")
             me.count = 10
@@ -41,7 +41,7 @@ class Iterate(ufarc.Ahsm):
 
 
     def done(me, event):
-        sig = event.signal
+        sig = event[ufarc.Event.SIG_IDX]
         if sig == ufarc.SIGNAL.ENTRY:
             print("done")
             ufarc.Framework.stop()
