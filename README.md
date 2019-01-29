@@ -15,8 +15,7 @@ programs by using a message-passing system and run-to-completion message handler
 within a state-machine architecture.  With these tools, complex, asynchronous operations
 are decomposed into manageable chunks of code.
 
-Known Issue: On windows, Ctrl+C is suppressed by asyncio event loop's run_forever() ([bug report](https://bugs.python.org/issue23057)).
-The workaround is to inject an event to awake the event loop.
+Known Issue: Nothing works yet.
 
 Note:  This project used to be called "pq" but that name was taken in PyPI,
 so I renamed to farc (ugh).  If you see "pq" in the code anywhere, it means farc.

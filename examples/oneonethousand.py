@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-import asyncio
+import uasyncio
 
 import farc
 
@@ -40,6 +40,6 @@ if __name__ == "__main__":
     ms = Mississippi(Mississippi.initial)
     ms.start(0)
 
-    loop = asyncio.get_event_loop()
+    loop = uasyncio.get_event_loop()
     loop.run_forever()
     loop.close()

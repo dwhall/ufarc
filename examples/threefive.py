@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-import asyncio
+import uasyncio
 
 import farc
 
@@ -67,7 +67,7 @@ if __name__ == "__main__":
     three.start(3)
     five.start(5)
 
-    loop = asyncio.get_event_loop()
+    loop = uasyncio.get_event_loop()
     try:
         loop.run_forever()
     except KeyboardInterrupt:

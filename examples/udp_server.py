@@ -16,7 +16,7 @@ References:
 - https://docs.python.org/3.4/library/asyncio.html
 """
 
-import asyncio
+import uasyncio
 
 import farc
 
@@ -42,7 +42,7 @@ class UdpRelayAhsm(farc.Ahsm):
         farc.Framework.subscribe("NET_RXD", me)
         me.tmr = farc.TimeEvent("FIVE_COUNT")
 
-        loop = asyncio.get_event_loop()
+        loop = uasyncio.get_event_loop()
         server = loop.create_datagram_endpoint(UdpServer, local_addr=("localhost", UDP_PORT))
         me.transport, me.protocol = loop.run_until_complete(server)
         return me.tran(me, UdpRelayAhsm.waiting)
@@ -120,7 +120,7 @@ if __name__ == "__main__":
     relay = UdpRelayAhsm(UdpRelayAhsm.initial)
     relay.start(0)
 
-    loop = asyncio.get_event_loop()
+    loop = uasyncio.get_event_loop()
     try:
         loop.run_forever()
     except KeyboardInterrupt:

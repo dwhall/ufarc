@@ -2,7 +2,7 @@
 Copyright 2017 Dean Hall.  See LICENSE file for details.
 """
 
-import asyncio
+import uasyncio
 import math
 import signal
 import sys
@@ -14,14 +14,14 @@ from .Hsm import Hsm
 
 class Framework(object):
     """Framework is a composite class that holds:
-    - the asyncio event loop
+    - the uasyncio event loop
     - the registry of AHSMs
     - the set of TimeEvents
     - the handle to the next TimeEvent
     - the table subscriptions to events
     """
 
-    _event_loop = asyncio.get_event_loop()
+    _event_loop = uasyncio.get_event_loop()
 
     # The Framework maintains a registry of Ahsms in a list.
     _ahsm_registry = []
