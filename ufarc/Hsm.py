@@ -55,6 +55,7 @@ class Hsm(object):
     @staticmethod
     def super(me, superState): me.state = superState; return Hsm.RET_SUPER # p. 158
 
+    @staticmethod
     def top(me, event):
         """This is the default state handler.
         This handler ignores all signals.
