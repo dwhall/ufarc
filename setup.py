@@ -8,7 +8,7 @@ setuptools.setup(
     version="0.1.0",
     author="Dean Hall",
     author_email="dwhall256@gmail.com",
-    description="Framework for Asyncio/Actor/AHSM Run-to-completion Concurrency for MicroPython",
+    description="Framework for Asyncio AHSM Run-to-completion Concurrency for MicroPython",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/dwhall/ufarc",

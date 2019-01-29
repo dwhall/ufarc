@@ -6,7 +6,7 @@ Known Issue: Nothing works yet.
 
 ## farc
 
-Framework for Asyncio/Actor/AHSM Run-to-completion Concurrency written in Python3.
+Framework for Asyncio AHSM Run-to-completion Concurrency written in Python3.
 In other words, a cheap knock-off of QP (www.state-machine.com)
 that uses coroutines instead of threads.
 [This book](https://newcontinuum.dl.sourceforge.net/project/qpc/doc/PSiCC2.pdf)

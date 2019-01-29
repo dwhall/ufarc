@@ -52,11 +52,11 @@ class Framework(object):
 
 
     @staticmethod
-    def post(event, act):
+    def post(event, ahsm):
         """Posts the event to the given Ahsm's event queue.
         """
-        assert isinstance(act, Hsm)
-        act.postFIFO(event)
+        assert isinstance(ahsm, Hsm)
+        ahsm.postFIFO(event)
 
 
     @staticmethod
@@ -65,14 +65,14 @@ class Framework(object):
         that is subscribed to the event's signal.
         """
         if event[Event.SIG_IDX] in Framework._subscriber_table:
-            for act in Framework._subscriber_table[event[Event.SIG_IDX]]:
-                act.postFIFO(event)
+            for ahsm in Framework._subscriber_table[event[Event.SIG_IDX]]:
+                ahsm.postFIFO(event)
         # Run to completion
         Framework.rtc()
 
 
     @staticmethod
-    def subscribe(signame, act):
+    def subscribe(signame, ahsm):
         """Adds the given Ahsm to the subscriber table list
         for the given signal.  The argument, signame, is a string of the name
         of the Signal to which the Ahsm is subscribing.  Using a string allows
@@ -81,7 +81,7 @@ class Framework(object):
         sigid = SIGNAL.register(signame)
         if sigid not in Framework._subscriber_table:
             Framework._subscriber_table[sigid] = []
-        Framework._subscriber_table[sigid].append(act)
+        Framework._subscriber_table[sigid].append(ahsm)
 
 
     @staticmethod
@@ -116,7 +116,7 @@ class Framework(object):
         # If the event is to happen in the past, post it now
         now = Framework._event_loop.time()
         if expiration < now:
-            tm_event.act.postFIFO(tm_event)
+            tm_event.ahsm.postFIFO(tm_event)
             # TODO: if periodic, need to schedule next?
 
         # If an event already occupies this expiration time,
@@ -186,7 +186,7 @@ class Framework(object):
         Framework._tm_event_handle = None
 
         # Post the event to the target Ahsm
-        tm_event.act.postFIFO(tm_event)
+        tm_event.ahsm.postFIFO(tm_event)
 
         # If this is a periodic time event, schedule its next expiration
         if tm_event.interval > 0:
@@ -207,13 +207,13 @@ class Framework(object):
 
 
     @staticmethod
-    def add(act):
+    def add(ahsm):
         """Makes the framework aware of the given Ahsm.
         """
-        Framework._ahsm_registry.append(act)
-        assert act.priority not in Framework._priority_dict, (
+        Framework._ahsm_registry.append(ahsm)
+        assert ahsm.priority not in Framework._priority_dict, (
                 "Priority MUST be unique")
-        Framework._priority_dict[act.priority] = act
+        Framework._priority_dict[ahsm.priority] = ahsm
 
 
     @staticmethod
@@ -226,10 +226,10 @@ class Framework(object):
         while True:
             allQueuesEmpty = True
             sorted_acts = sorted(Framework._ahsm_registry, key=getPriority)
-            for act in sorted_acts:
-                if act.has_msgs():
-                    event_next = act.pop_msg()
-                    act.dispatch(act, event_next)
+            for ahsm in sorted_acts:
+                if ahsm.has_msgs():
+                    event_next = ahsm.pop_msg()
+                    ahsm.dispatch(ahsm, event_next)
                     allQueuesEmpty = False
                     break
             if allQueuesEmpty:
@@ -254,8 +254,8 @@ class Framework(object):
             Framework._tm_event_handle = None
 
         # Post SIGTERM to all Ahsms so they execute their EXIT handler
-        for act in Framework._ahsm_registry:
-            Framework.post(Event.SIGTERM, act)
+        for ahsm in Framework._ahsm_registry:
+            Framework.post(Event.SIGTERM, ahsm)
 
         # Run to completion so each Ahsm will process SIGTERM
         Framework.run()

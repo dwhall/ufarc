@@ -31,7 +31,7 @@ class Hsm(object):
         """Sets this Hsm's current state to Hsm.top(), the default state
         and stores the given initial state.
         """
-        # self.state is the Hsm/act's current active state.
+        # self.state is the Hsm's current active state.
         # This instance variable references the message handler (method)
         # that will be called whenever a message is sent to this Hsm.
         # We initialize this to self.top, the default message handler

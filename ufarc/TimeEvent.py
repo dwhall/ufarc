@@ -26,30 +26,30 @@ class TimeEvent(object):
             return self.signal
 
 
-    def postAt(self, act, abs_time):
+    def postAt(self, ahsm, abs_time):
         """Posts this TimeEvent to the given Ahsm at a specified time.
         """
-        assert issubclass(type(act), Ahsm)
-        self.act = act
+        assert issubclass(type(ahsm), Ahsm)
+        self.ahsm = ahsm
         self.interval = 0
         Framework.addTimeEventAt(self, abs_time)
 
 
-    def postIn(self, act, delta):
+    def postIn(self, ahsm, delta):
         """Posts this TimeEvent to the given Ahsm after the time delta.
         """
-        assert issubclass(type(act), Ahsm)
-        self.act = act
+        assert issubclass(type(ahsm), Ahsm)
+        self.ahsm = ahsm
         self.interval = 0
         Framework.addTimeEvent(self, delta)
 
 
-    def postEvery(self, act, delta):
+    def postEvery(self, ahsm, delta):
         """Posts this TimeEvent to the given Ahsm after the time delta
         and every time delta thereafter until disarmed.
         """
-        assert issubclass(type(act), Ahsm)
-        self.act = act
+        assert issubclass(type(ahsm), Ahsm)
+        self.ahsm = ahsm
         self.interval = delta
         Framework.addTimeEvent(self, delta)
 
@@ -57,5 +57,5 @@ class TimeEvent(object):
     def disarm(self):
         """Removes this TimeEvent from the Framework's active time events.
         """
-        self.act = None
+        self.ahsm = None
         Framework.removeTimeEvent(self)
