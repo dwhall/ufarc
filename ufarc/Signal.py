@@ -41,14 +41,12 @@ class Signal(object):
         return Signal._registry[signame]
 
 
-# Singleton pattern:
-# Turn Signal into an instance of itself so getattr works.
-# This also prevents Signal() from creating a new instance.
-Signal = Signal()
+# A namespace to hold pre-defined Signals
+SIGNAL = Signal()
 
 
 # Register the reserved (system) signals
-Signal.register("EMPTY") # 0
-Signal.register("ENTRY") # 1
-Signal.register("EXIT")  # 2
-Signal.register("INIT")  # 3
+SIGNAL.register("EMPTY") # 0
+SIGNAL.register("ENTRY") # 1
+SIGNAL.register("EXIT")  # 2
+SIGNAL.register("INIT")  # 3

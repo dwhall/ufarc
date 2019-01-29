@@ -3,7 +3,7 @@ Copyright 2017 Dean Hall.  See LICENSE file for details.
 """
 
 
-from .Signal import Signal
+from .Signal import SIGNAL
 from .Framework import Framework
 from .Ahsm import Ahsm
 
@@ -17,7 +17,7 @@ class TimeEvent(object):
     """
     def __init__(self, signame):
         assert type(signame) == str
-        self.signal = Signal.register(signame)
+        self.signal = SIGNAL.register(signame)
         self.value = None
 
 

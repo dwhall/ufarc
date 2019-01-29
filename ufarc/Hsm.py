@@ -2,7 +2,7 @@
 Copyright 2017 Dean Hall.  See LICENSE file for details.
 """
 
-from .Signal import Signal
+from .Signal import SIGNAL
 from .Event import EVENT
 
 
@@ -84,10 +84,10 @@ class Hsm(object):
             path = [me.state]
 
             # From the designated initial state, record the path to top
-            Hsm.trig(me, me.state, Signal.EMPTY)
+            Hsm.trig(me, me.state, SIGNAL.EMPTY)
             while me.state != t:
                 path.append(me.state)
-                Hsm.trig(me, me.state, Signal.EMPTY)
+                Hsm.trig(me, me.state, SIGNAL.EMPTY)
 
             # Restore the target of the initial transition
             me.state = path[0]
@@ -101,7 +101,7 @@ class Hsm(object):
             # Current state becomes new source (-1 because path was reversed)
             t = path[-1]
 
-            if Hsm.trig(me, t, Signal.INIT) != Hsm.RET_TRAN:
+            if Hsm.trig(me, t, SIGNAL.INIT) != Hsm.RET_TRAN:
                 break
 
         # Current state is set to the final leaf state
@@ -133,10 +133,10 @@ class Hsm(object):
             t = me.state
 
             # Record path to top
-            Hsm.trig(me, me.state, Signal.EMPTY)
+            Hsm.trig(me, me.state, SIGNAL.EMPTY)
             while me.state != Hsm.top:
                 exit_path.append(me.state)
-                Hsm.trig(me, me.state, Signal.EMPTY)
+                Hsm.trig(me, me.state, SIGNAL.EMPTY)
 
             # Record path from target to top
             me.state = t
@@ -144,7 +144,7 @@ class Hsm(object):
             r = Hsm.RET_TRAN
             while me.state != Hsm.top:
                 entry_path.append(me.state)
-                Hsm.trig(me, me.state, Signal.EMPTY)
+                Hsm.trig(me, me.state, SIGNAL.EMPTY)
 
             # Find the Least Common Ancestor between the source and target
             i = -1

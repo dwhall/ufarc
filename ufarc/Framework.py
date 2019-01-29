@@ -7,7 +7,7 @@ import math
 import signal
 import sys
 
-from .Signal import Signal
+from .Signal import SIGNAL
 from .Event import EVENT
 from .Hsm import Hsm
 
@@ -93,7 +93,7 @@ class Framework(object):
         of the Signal to which the Ahsm is subscribing.  Using a string allows
         the Signal to be created in the registry if it is not already.
         """
-        sigid = Signal.register(signame)
+        sigid = SIGNAL.register(signame)
         if sigid not in Framework._subscriber_table:
             Framework._subscriber_table[sigid] = []
         Framework._subscriber_table[sigid].append(act)
