@@ -21,6 +21,11 @@ class TimeEvent(object):
         self.value = None
 
 
+    def __getitem__(self, n):
+        if n == 0:
+            return self.signal
+
+
     def postAt(self, act, abs_time):
         """Posts this TimeEvent to the given Ahsm at a specified time.
         """
