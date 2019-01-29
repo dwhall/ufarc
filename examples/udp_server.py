@@ -59,8 +59,8 @@ class UdpRelayAhsm(farc.Ahsm):
             print("RelayFrom(%s): %r" % (me.latest_addr, me.latest_msg.decode()))
             return me.tran(me, UdpRelayAhsm.relaying)
 
-        elif sig == farc.Signal.SIGTERM:
-            return me.tran(me, UdpRelayAhsm.exiting)
+#        elif sig == farc.Signal.SIGTERM:
+#            return me.tran(me, UdpRelayAhsm.exiting)
 
         return me.super(me, me.top)
 
@@ -84,9 +84,9 @@ class UdpRelayAhsm(farc.Ahsm):
         elif sig == farc.Signal.NET_ERR:
             return me.tran(me, UdpRelayAhsm.waiting)
 
-        elif sig == farc.Signal.SIGTERM:
-            me.tmr.disarm()
-            return me.tran(me, UdpRelayAhsm.exiting)
+#        elif sig == farc.Signal.SIGTERM:
+#            me.tmr.disarm()
+#            return me.tran(me, UdpRelayAhsm.exiting)
 
         elif sig == farc.Signal.EXIT:
             print("Leaving timer event running so Ctrl+C will be handled on Windows")

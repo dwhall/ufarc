@@ -58,22 +58,9 @@ class Hsm(object):
     @state
     def top(me, event):
         """This is the default state handler.
-        This handler ignores all signals except
-        the POSIX-like events, SIGINT/SIGTERM.
-        Handling SIGINT/SIGTERM here causes the Exit path
-        to be executed from the application's active state
-        to top/here.
-        The application may put something useful
-        or nothing at all in the Exit path.
+        This handler ignores all signals.
         """
-        # Handle the Posix-like events to force the HSM
-        # to execute its Exit path all the way to the top
-        if EVENT.SIGINT == event:
-            return Hsm.RET_HANDLED
-        if EVENT.SIGTERM == event:
-            return Hsm.RET_HANDLED
-
-        # All other events are quietly ignored
+        # All events are quietly ignored
         return Hsm.RET_IGNORED # p. 165
 
 

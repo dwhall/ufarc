@@ -267,23 +267,3 @@ class Framework(object):
         # Run to completion so each Ahsm will process SIGTERM
         Framework.run()
         Framework._event_loop.stop()
-
-
-    @staticmethod
-    def print_info():
-        """Prints the name and current state
-        of each actor in the framework.
-        Meant to be called when ctrl+T (SIGINFO/29) is issued.
-        """
-        for act in Framework._ahsm_registry:
-            print(act.__class__.__name__, act.state.__name__)
-
-
-    # Bind a useful set of POSIX signals to the handler
-    # (ignore a NotImplementedError on Windows)
-    try:
-        _event_loop.add_signal_handler(signal.SIGINT, lambda: Framework.stop())
-        _event_loop.add_signal_handler(signal.SIGTERM, lambda: Framework.stop())
-        _event_loop.add_signal_handler(29, print_info.__func__)
-    except NotImplementedError:
-        pass
