@@ -16,16 +16,16 @@ class Three(ufarc.Ahsm):
 
     def running(me, event):
         sig = event.signal
-        if sig == ufarc.Signal.ENTRY:
+        if sig == ufarc.SIGNAL.ENTRY:
             print("three enter")
             me.te.postEvery(me, 3)
             return me.handled(me, event)
 
-        elif sig == ufarc.Signal.TICK3:
+        elif sig == ufarc.SIGNAL.TICK3:
             print("three tick")
             return me.handled(me, event)
 
-        elif sig == ufarc.Signal.EXIT:
+        elif sig == ufarc.SIGNAL.EXIT:
             print("three exit")
             me.te.disarm()
             return me.handled(me, event)
@@ -43,16 +43,16 @@ class Five(ufarc.Ahsm):
 
     def running(me, event):
         sig = event.signal
-        if sig == ufarc.Signal.ENTRY:
+        if sig == ufarc.SIGNAL.ENTRY:
             print("five enter")
             me.te.postEvery(me, 5)
             return me.handled(me, event)
 
-        elif sig == ufarc.Signal.TICK5:
+        elif sig == ufarc.SIGNAL.TICK5:
             print("five tick")
             return me.handled(me, event)
 
-        elif sig == ufarc.Signal.EXIT:
+        elif sig == ufarc.SIGNAL.EXIT:
             print("five exit")
             me.te.disarm()
             return me.handled(me, event)

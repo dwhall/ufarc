@@ -20,12 +20,12 @@ class Countdown(ufarc.Ahsm):
 
     def counting(me, event):
         sig = event.signal
-        if sig == ufarc.Signal.ENTRY:
+        if sig == ufarc.SIGNAL.ENTRY:
             print("counting")
             me.te.postIn(me, 1.0)
             return me.handled(me, event)
 
-        elif sig == ufarc.Signal.TIME_TICK:
+        elif sig == ufarc.SIGNAL.TIME_TICK:
             print(me.count)
 
             if me.count == 0:
@@ -40,7 +40,7 @@ class Countdown(ufarc.Ahsm):
 
     def done(me, event):
         sig = event.signal
-        if sig == ufarc.Signal.ENTRY:
+        if sig == ufarc.SIGNAL.ENTRY:
             print("done")
             ufarc.Framework.stop()
             return me.handled(me, event)

@@ -50,16 +50,16 @@ class UdpRelayAhsm(ufarc.Ahsm):
 
     def waiting(me, event):
         sig = event.signal
-        if sig == ufarc.Signal.ENTRY:
+        if sig == ufarc.SIGNAL.ENTRY:
             print("Awaiting a UDP datagram on port {0}.  Try: $ nc -u localhost {0}".format(UDP_PORT))
             return me.handled(me, event)
 
-        elif sig == ufarc.Signal.NET_RXD:
+        elif sig == ufarc.SIGNAL.NET_RXD:
             me.latest_msg, me.latest_addr = event.value
             print("RelayFrom(%s): %r" % (me.latest_addr, me.latest_msg.decode()))
             return me.tran(me, UdpRelayAhsm.relaying)
 
-#        elif sig == ufarc.Signal.SIGTERM:
+#        elif sig == ufarc.SIGNAL.SIGTERM:
 #            return me.tran(me, UdpRelayAhsm.exiting)
 
         return me.super(me, me.top)
@@ -67,28 +67,28 @@ class UdpRelayAhsm(ufarc.Ahsm):
 
     def relaying(me, event):
         sig = event.signal
-        if sig == ufarc.Signal.ENTRY:
+        if sig == ufarc.SIGNAL.ENTRY:
             me.tmr.postEvery(me, 5.000)
             return me.handled(me, event)
 
-        elif sig == ufarc.Signal.NET_RXD:
+        elif sig == ufarc.SIGNAL.NET_RXD:
             me.latest_msg, me.latest_addr = event.value
             print("RelayFrom(%s): %r" % (me.latest_addr, me.latest_msg.decode()))
             return me.handled(me, event)
 
-        elif sig == ufarc.Signal.FIVE_COUNT:
+        elif sig == ufarc.SIGNAL.FIVE_COUNT:
             s = "Latest: %r\n" % me.latest_msg.decode()
             me.transport.sendto(s.encode(), me.latest_addr)
             return me.handled(me, event)
 
-        elif sig == ufarc.Signal.NET_ERR:
+        elif sig == ufarc.SIGNAL.NET_ERR:
             return me.tran(me, UdpRelayAhsm.waiting)
 
-#        elif sig == ufarc.Signal.SIGTERM:
+#        elif sig == ufarc.SIGNAL.SIGTERM:
 #            me.tmr.disarm()
 #            return me.tran(me, UdpRelayAhsm.exiting)
 
-        elif sig == ufarc.Signal.EXIT:
+        elif sig == ufarc.SIGNAL.EXIT:
             print("Leaving timer event running so Ctrl+C will be handled on Windows")
             return me.handled(me, event)
 
@@ -97,7 +97,7 @@ class UdpRelayAhsm(ufarc.Ahsm):
 
     def exiting(me, event):
         sig = event.signal
-        if sig == ufarc.Signal.ENTRY:
+        if sig == ufarc.SIGNAL.ENTRY:
             print("exiting")
             me.transport.close()
             return me.handled(me, event)
@@ -107,12 +107,12 @@ class UdpRelayAhsm(ufarc.Ahsm):
     # Callbacks interact via messaging
     @staticmethod
     def on_datagram(data, addr):
-        e = ufarc.Event(ufarc.Signal.NET_RXD, (data,addr))
+        e = ufarc.Event(ufarc.SIGNAL.NET_RXD, (data,addr))
         ufarc.Framework.publish(e)
 
     @staticmethod
     def on_error(error):
-        e = ufarc.Event(ufarc.Signal.NET_ERR, (error))
+        e = ufarc.Event(ufarc.SIGNAL.NET_ERR, (error))
         ufarc.Framework.publish(e)
 
 

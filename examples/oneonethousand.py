@@ -17,18 +17,18 @@ class Mississippi(ufarc.Ahsm):
 
     def counting(me, event):
         sig = event.signal
-        if sig == ufarc.Signal.ENTRY:
+        if sig == ufarc.SIGNAL.ENTRY:
             print("counting enter")
             me._count = 0
             me.teCount.postEvery(me, 0.001)
             me.tePrint.postEvery(me, 1.000)
             return me.handled(me, event)
 
-        elif sig == ufarc.Signal.COUNT:
+        elif sig == ufarc.SIGNAL.COUNT:
             me._count += 1
             return me.handled(me, event)
 
-        elif sig == ufarc.Signal.PRINT:
+        elif sig == ufarc.SIGNAL.PRINT:
             print(me._count, "millis")
             return me.handled(me, event)
 

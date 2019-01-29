@@ -9,24 +9,24 @@ import ufarc
 class Iterate(ufarc.Ahsm):
     def __init__(self,):
         super().__init__(Iterate.initial)
-        ufarc.Signal.register("ITERATE")
+        ufarc.SIGNAL.register("ITERATE")
 
 
     def initial(me, event):
         print("initial")
-        me.iter_evt = ufarc.Event(ufarc.Signal.ITERATE, None)
+        me.iter_evt = ufarc.Event(ufarc.SIGNAL.ITERATE, None)
         return me.tran(me, Iterate.iterating)
 
 
     def iterating(me, event):
         sig = event.signal
-        if sig == ufarc.Signal.ENTRY:
+        if sig == ufarc.SIGNAL.ENTRY:
             print("iterating")
             me.count = 10
             me.postFIFO(me.iter_evt)
             return me.handled(me, event)
 
-        elif sig == ufarc.Signal.ITERATE:
+        elif sig == ufarc.SIGNAL.ITERATE:
             print(me.count)
 
             if me.count == 0:
@@ -42,7 +42,7 @@ class Iterate(ufarc.Ahsm):
 
     def done(me, event):
         sig = event.signal
-        if sig == ufarc.Signal.ENTRY:
+        if sig == ufarc.SIGNAL.ENTRY:
             print("done")
             ufarc.Framework.stop()
             return me.handled(me, event)
