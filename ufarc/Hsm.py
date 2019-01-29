@@ -3,7 +3,7 @@ Copyright 2017 Dean Hall.  See LICENSE file for details.
 """
 
 from .Signal import Signal
-from .Event import Event
+from .Event import EVENT
 
 
 class Hsm(object):
@@ -41,11 +41,11 @@ class Hsm(object):
 
     # Helper functions to process reserved events through the current state
     @staticmethod
-    def trig(me, state, signal): return state(me, Event.reserved[signal])
+    def trig(me, state, signal): return state(me, EVENT.reserved[signal])
     @staticmethod
-    def enter(me, state): return state(me, Event.ENTRY)
+    def enter(me, state): return state(me, EVENT.ENTRY)
     @staticmethod
-    def exit(me, state): return state(me, Event.EXIT)
+    def exit(me, state): return state(me, EVENT.EXIT)
 
     # Other helper functions
     @staticmethod
@@ -68,9 +68,9 @@ class Hsm(object):
         """
         # Handle the Posix-like events to force the HSM
         # to execute its Exit path all the way to the top
-        if Event.SIGINT == event:
+        if EVENT.SIGINT == event:
             return Hsm.RET_HANDLED
-        if Event.SIGTERM == event:
+        if EVENT.SIGTERM == event:
             return Hsm.RET_HANDLED
 
         # All other events are quietly ignored

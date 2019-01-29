@@ -8,7 +8,7 @@ import signal
 import sys
 
 from .Signal import Signal
-from .Event import Event
+from .Event import EVENT
 from .Hsm import Hsm
 
 
@@ -262,7 +262,7 @@ class Framework(object):
 
         # Post SIGTERM to all Ahsms so they execute their EXIT handler
         for act in Framework._ahsm_registry:
-            Framework.post(Event.SIGTERM, act)
+            Framework.post(EVENT.SIGTERM, act)
 
         # Run to completion so each Ahsm will process SIGTERM
         Framework.run()
