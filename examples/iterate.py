@@ -12,14 +12,12 @@ class Iterate(farc.Ahsm):
         farc.Signal.register("ITERATE")
 
 
-    @farc.Hsm.state
     def initial(me, event):
         print("initial")
         me.iter_evt = farc.Event(farc.Signal.ITERATE, None)
         return me.tran(me, Iterate.iterating)
 
 
-    @farc.Hsm.state
     def iterating(me, event):
         sig = event.signal
         if sig == farc.Signal.ENTRY:
@@ -42,7 +40,6 @@ class Iterate(farc.Ahsm):
         return me.super(me, me.top)
 
 
-    @farc.Hsm.state
     def done(me, event):
         sig = event.signal
         if sig == farc.Signal.ENTRY:

@@ -2,8 +2,6 @@
 Copyright 2017 Dean Hall.  See LICENSE file for details.
 """
 
-from .Spy import Spy
-
 
 class Signal(object):
     """An asynchronous stimulus that triggers reactions.
@@ -35,7 +33,6 @@ class Signal(object):
             sigid = len(Signal._lookup)
             Signal._registry[signame] = sigid
             Signal._lookup.append(signame)
-            Spy.on_signal_register(signame, sigid)
             return sigid
 
 

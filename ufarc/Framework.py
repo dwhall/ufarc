@@ -7,7 +7,6 @@ import math
 import signal
 import sys
 
-from .Spy import Spy
 from .Signal import Signal
 from .Event import Event
 from .Hsm import Hsm
@@ -230,7 +229,6 @@ class Framework(object):
         assert act.priority not in Framework._priority_dict, (
                 "Priority MUST be unique")
         Framework._priority_dict[act.priority] = act
-        Spy.on_framework_add(act)
 
 
     @staticmethod
@@ -269,8 +267,6 @@ class Framework(object):
         # Run to completion so each Ahsm will process SIGTERM
         Framework.run()
         Framework._event_loop.stop()
-
-        Spy.on_framework_stop()
 
 
     @staticmethod

@@ -37,7 +37,6 @@ class UdpServer:
 
 class UdpRelayAhsm(farc.Ahsm):
 
-    @farc.Hsm.state
     def initial(me, event):
         farc.Framework.subscribe("NET_ERR", me)
         farc.Framework.subscribe("NET_RXD", me)
@@ -49,7 +48,6 @@ class UdpRelayAhsm(farc.Ahsm):
         return me.tran(me, UdpRelayAhsm.waiting)
 
 
-    @farc.Hsm.state
     def waiting(me, event):
         sig = event.signal
         if sig == farc.Signal.ENTRY:
@@ -67,7 +65,6 @@ class UdpRelayAhsm(farc.Ahsm):
         return me.super(me, me.top)
 
 
-    @farc.Hsm.state
     def relaying(me, event):
         sig = event.signal
         if sig == farc.Signal.ENTRY:

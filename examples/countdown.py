@@ -12,14 +12,12 @@ class Countdown(farc.Ahsm):
         self.count = count
 
 
-    @farc.Hsm.state
     def initial(me, event):
         print("initial")
         me.te = farc.TimeEvent("TIME_TICK")
         return me.tran(me, Countdown.counting)
 
 
-    @farc.Hsm.state
     def counting(me, event):
         sig = event.signal
         if sig == farc.Signal.ENTRY:
@@ -40,7 +38,6 @@ class Countdown(farc.Ahsm):
         return me.super(me, me.top)
 
 
-    @farc.Hsm.state
     def done(me, event):
         sig = event.signal
         if sig == farc.Signal.ENTRY:

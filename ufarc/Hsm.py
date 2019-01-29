@@ -2,7 +2,6 @@
 Copyright 2017 Dean Hall.  See LICENSE file for details.
 """
 
-from .Spy import Spy
 from .Signal import Signal
 from .Event import Event
 
@@ -39,17 +38,6 @@ class Hsm(object):
         self.state = self.top
         self.initialState = initialState
 
-
-    def state(func):
-        """A decorator that identifies which methods are states.
-        The presence of the farc_state attr, not its value,
-        determines statehood.
-        The Spy debugging system uses the farc_state attribute
-        to determine which methods inside a class are actually states.
-        Other uses of the attribute may come in the future.
-        """
-        setattr(func, "farc_state", True)
-        return staticmethod(func)
 
     # Helper functions to process reserved events through the current state
     @staticmethod
@@ -141,8 +129,6 @@ class Hsm(object):
         until the event is handled or top() is reached
         p. 174
         """
-        Spy.on_hsm_dispatch_event(event)
-
         # Save the current state
         t = me.state
 
@@ -152,10 +138,7 @@ class Hsm(object):
         while r == Hsm.RET_SUPER:
             s = me.state
             exit_path.append(s)
-            Spy.on_hsm_dispatch_pre(s)
             r = s(me, event)    # invoke state handler
-
-        Spy.on_hsm_dispatch_post(exit_path)
 
         # If the state handler indicates a transition
         if r == Hsm.RET_TRAN:

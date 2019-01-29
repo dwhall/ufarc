@@ -8,7 +8,6 @@ import farc
 
 class Mississippi(farc.Ahsm):
 
-    @farc.Hsm.state
     def initial(me, event):
         print("initial")
         me.teCount = farc.TimeEvent("COUNT")
@@ -16,7 +15,6 @@ class Mississippi(farc.Ahsm):
         return me.tran(me, Mississippi.counting)
 
 
-    @farc.Hsm.state
     def counting(me, event):
         sig = event.signal
         if sig == farc.Signal.ENTRY:
