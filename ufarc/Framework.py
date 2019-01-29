@@ -54,22 +54,9 @@ class Framework(object):
     @staticmethod
     def post(event, act):
         """Posts the event to the given Ahsm's event queue.
-        The argument, act, is either a string of the name of the class
-        to which the event is sent or the Ahsm instance itself.
-        If the argument is a string, the event will post to all actors
-        having the given classname.
         """
-        if type(act) is str:
-            # I'm not convinced this is appropriate for the long term.
-            # post() should target one actor and publish() targets many.
-            # This was created to support legacy apps which use
-            # an actor's class name as the target.
-            # If this goes away, apps will need to adapt.
-            [a.postFIFO(event) for a in Framework._ahsm_registry
-                    if a.__class__.__name__ == act]
-        else:
-            assert isinstance(act, Hsm)
-            act.postFIFO(event)
+        assert isinstance(act, Hsm)
+        act.postFIFO(event)
 
 
     @staticmethod
