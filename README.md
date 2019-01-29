@@ -2,6 +2,8 @@
 
 ufarc is a fork and rewrite of farc for [MicroPython](http://micropython.org).
 
+Known Issue: Nothing works yet.
+
 ## farc
 
 Framework for Asyncio/Actor/AHSM Run-to-completion Concurrency written in Python3.
@@ -14,11 +16,6 @@ This framework has fewer than 1000 LOC.  It allows the programmer to create high
 programs by using a message-passing system and run-to-completion message handlers
 within a state-machine architecture.  With these tools, complex, asynchronous operations
 are decomposed into manageable chunks of code.
-
-Known Issue: Nothing works yet.
-
-Note:  This project used to be called "pq" but that name was taken in PyPI,
-so I renamed to farc (ugh).  If you see "pq" in the code anywhere, it means farc.
 
 
 ## Code Repository

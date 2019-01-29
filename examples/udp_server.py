@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-"""UDP Relay AHSM for farc
+"""UDP Relay AHSM for ufarc
 This is a demonstration program that
-relays UDP messages to/from the farc framework.
+relays UDP messages to/from the ufarc framework.
 
 This file represents the "server" which listens for a connection.
 A client such as netcat (nc) can be used to issue UDP datagrams
@@ -18,7 +18,7 @@ References:
 
 import uasyncio
 
-import farc
+import ufarc
 
 
 UDP_PORT = 4242
@@ -35,12 +35,12 @@ class UdpServer:
         UdpRelayAhsm.on_error(error)
 
 
-class UdpRelayAhsm(farc.Ahsm):
+class UdpRelayAhsm(ufarc.Ahsm):
 
     def initial(me, event):
-        farc.Framework.subscribe("NET_ERR", me)
-        farc.Framework.subscribe("NET_RXD", me)
-        me.tmr = farc.TimeEvent("FIVE_COUNT")
+        ufarc.Framework.subscribe("NET_ERR", me)
+        ufarc.Framework.subscribe("NET_RXD", me)
+        me.tmr = ufarc.TimeEvent("FIVE_COUNT")
 
         loop = uasyncio.get_event_loop()
         server = loop.create_datagram_endpoint(UdpServer, local_addr=("localhost", UDP_PORT))
@@ -50,16 +50,16 @@ class UdpRelayAhsm(farc.Ahsm):
 
     def waiting(me, event):
         sig = event.signal
-        if sig == farc.Signal.ENTRY:
+        if sig == ufarc.Signal.ENTRY:
             print("Awaiting a UDP datagram on port {0}.  Try: $ nc -u localhost {0}".format(UDP_PORT))
             return me.handled(me, event)
 
-        elif sig == farc.Signal.NET_RXD:
+        elif sig == ufarc.Signal.NET_RXD:
             me.latest_msg, me.latest_addr = event.value
             print("RelayFrom(%s): %r" % (me.latest_addr, me.latest_msg.decode()))
             return me.tran(me, UdpRelayAhsm.relaying)
 
-#        elif sig == farc.Signal.SIGTERM:
+#        elif sig == ufarc.Signal.SIGTERM:
 #            return me.tran(me, UdpRelayAhsm.exiting)
 
         return me.super(me, me.top)
@@ -67,28 +67,28 @@ class UdpRelayAhsm(farc.Ahsm):
 
     def relaying(me, event):
         sig = event.signal
-        if sig == farc.Signal.ENTRY:
+        if sig == ufarc.Signal.ENTRY:
             me.tmr.postEvery(me, 5.000)
             return me.handled(me, event)
 
-        elif sig == farc.Signal.NET_RXD:
+        elif sig == ufarc.Signal.NET_RXD:
             me.latest_msg, me.latest_addr = event.value
             print("RelayFrom(%s): %r" % (me.latest_addr, me.latest_msg.decode()))
             return me.handled(me, event)
 
-        elif sig == farc.Signal.FIVE_COUNT:
+        elif sig == ufarc.Signal.FIVE_COUNT:
             s = "Latest: %r\n" % me.latest_msg.decode()
             me.transport.sendto(s.encode(), me.latest_addr)
             return me.handled(me, event)
 
-        elif sig == farc.Signal.NET_ERR:
+        elif sig == ufarc.Signal.NET_ERR:
             return me.tran(me, UdpRelayAhsm.waiting)
 
-#        elif sig == farc.Signal.SIGTERM:
+#        elif sig == ufarc.Signal.SIGTERM:
 #            me.tmr.disarm()
 #            return me.tran(me, UdpRelayAhsm.exiting)
 
-        elif sig == farc.Signal.EXIT:
+        elif sig == ufarc.Signal.EXIT:
             print("Leaving timer event running so Ctrl+C will be handled on Windows")
             return me.handled(me, event)
 
@@ -97,7 +97,7 @@ class UdpRelayAhsm(farc.Ahsm):
 
     def exiting(me, event):
         sig = event.signal
-        if sig == farc.Signal.ENTRY:
+        if sig == ufarc.Signal.ENTRY:
             print("exiting")
             me.transport.close()
             return me.handled(me, event)
@@ -107,13 +107,13 @@ class UdpRelayAhsm(farc.Ahsm):
     # Callbacks interact via messaging
     @staticmethod
     def on_datagram(data, addr):
-        e = farc.Event(farc.Signal.NET_RXD, (data,addr))
-        farc.Framework.publish(e)
+        e = ufarc.Event(ufarc.Signal.NET_RXD, (data,addr))
+        ufarc.Framework.publish(e)
 
     @staticmethod
     def on_error(error):
-        e = farc.Event(farc.Signal.NET_ERR, (error))
-        farc.Framework.publish(e)
+        e = ufarc.Event(ufarc.Signal.NET_ERR, (error))
+        ufarc.Framework.publish(e)
 
 
 if __name__ == "__main__":
@@ -124,5 +124,5 @@ if __name__ == "__main__":
     try:
         loop.run_forever()
     except KeyboardInterrupt:
-        farc.Framework.stop()
+        ufarc.Framework.stop()
     loop.close()

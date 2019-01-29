@@ -3,10 +3,10 @@
 
 import uasyncio
 
-import farc
+import ufarc
 
 
-class Countdown(farc.Ahsm):
+class Countdown(ufarc.Ahsm):
     def __init__(self, count=3):
         super().__init__(Countdown.initial)
         self.count = count
@@ -14,18 +14,18 @@ class Countdown(farc.Ahsm):
 
     def initial(me, event):
         print("initial")
-        me.te = farc.TimeEvent("TIME_TICK")
+        me.te = ufarc.TimeEvent("TIME_TICK")
         return me.tran(me, Countdown.counting)
 
 
     def counting(me, event):
         sig = event.signal
-        if sig == farc.Signal.ENTRY:
+        if sig == ufarc.Signal.ENTRY:
             print("counting")
             me.te.postIn(me, 1.0)
             return me.handled(me, event)
 
-        elif sig == farc.Signal.TIME_TICK:
+        elif sig == ufarc.Signal.TIME_TICK:
             print(me.count)
 
             if me.count == 0:
@@ -40,9 +40,9 @@ class Countdown(farc.Ahsm):
 
     def done(me, event):
         sig = event.signal
-        if sig == farc.Signal.ENTRY:
+        if sig == ufarc.Signal.ENTRY:
             print("done")
-            farc.Framework.stop()
+            ufarc.Framework.stop()
             return me.handled(me, event)
 
         return me.super(me, me.top)

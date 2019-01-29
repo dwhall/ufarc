@@ -3,29 +3,29 @@
 
 import uasyncio
 
-import farc
+import ufarc
 
 
-class Three(farc.Ahsm):
+class Three(ufarc.Ahsm):
 
     def initial(me, event):
         print("Three initial")
-        me.te = farc.TimeEvent("TICK3")
+        me.te = ufarc.TimeEvent("TICK3")
         return me.tran(me, Three.running)
 
 
     def running(me, event):
         sig = event.signal
-        if sig == farc.Signal.ENTRY:
+        if sig == ufarc.Signal.ENTRY:
             print("three enter")
             me.te.postEvery(me, 3)
             return me.handled(me, event)
 
-        elif sig == farc.Signal.TICK3:
+        elif sig == ufarc.Signal.TICK3:
             print("three tick")
             return me.handled(me, event)
 
-        elif sig == farc.Signal.EXIT:
+        elif sig == ufarc.Signal.EXIT:
             print("three exit")
             me.te.disarm()
             return me.handled(me, event)
@@ -33,26 +33,26 @@ class Three(farc.Ahsm):
         return me.super(me, me.top)
 
 
-class Five(farc.Ahsm):
+class Five(ufarc.Ahsm):
 
     def initial(me, event):
         print("Five initial")
-        me.te = farc.TimeEvent("TICK5")
+        me.te = ufarc.TimeEvent("TICK5")
         return me.tran(me, Five.running)
 
 
     def running(me, event):
         sig = event.signal
-        if sig == farc.Signal.ENTRY:
+        if sig == ufarc.Signal.ENTRY:
             print("five enter")
             me.te.postEvery(me, 5)
             return me.handled(me, event)
 
-        elif sig == farc.Signal.TICK5:
+        elif sig == ufarc.Signal.TICK5:
             print("five tick")
             return me.handled(me, event)
 
-        elif sig == farc.Signal.EXIT:
+        elif sig == ufarc.Signal.EXIT:
             print("five exit")
             me.te.disarm()
             return me.handled(me, event)
@@ -71,5 +71,5 @@ if __name__ == "__main__":
     try:
         loop.run_forever()
     except KeyboardInterrupt:
-        farc.Framework.stop()
+        ufarc.Framework.stop()
     loop.close()

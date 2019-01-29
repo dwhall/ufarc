@@ -3,32 +3,32 @@
 
 import uasyncio
 
-import farc
+import ufarc
 
 
-class Mississippi(farc.Ahsm):
+class Mississippi(ufarc.Ahsm):
 
     def initial(me, event):
         print("initial")
-        me.teCount = farc.TimeEvent("COUNT")
-        me.tePrint = farc.TimeEvent("PRINT")
+        me.teCount = ufarc.TimeEvent("COUNT")
+        me.tePrint = ufarc.TimeEvent("PRINT")
         return me.tran(me, Mississippi.counting)
 
 
     def counting(me, event):
         sig = event.signal
-        if sig == farc.Signal.ENTRY:
+        if sig == ufarc.Signal.ENTRY:
             print("counting enter")
             me._count = 0
             me.teCount.postEvery(me, 0.001)
             me.tePrint.postEvery(me, 1.000)
             return me.handled(me, event)
 
-        elif sig == farc.Signal.COUNT:
+        elif sig == ufarc.Signal.COUNT:
             me._count += 1
             return me.handled(me, event)
 
-        elif sig == farc.Signal.PRINT:
+        elif sig == ufarc.Signal.PRINT:
             print(me._count, "millis")
             return me.handled(me, event)
 

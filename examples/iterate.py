@@ -3,30 +3,30 @@
 
 import uasyncio
 
-import farc
+import ufarc
 
 
-class Iterate(farc.Ahsm):
+class Iterate(ufarc.Ahsm):
     def __init__(self,):
         super().__init__(Iterate.initial)
-        farc.Signal.register("ITERATE")
+        ufarc.Signal.register("ITERATE")
 
 
     def initial(me, event):
         print("initial")
-        me.iter_evt = farc.Event(farc.Signal.ITERATE, None)
+        me.iter_evt = ufarc.Event(ufarc.Signal.ITERATE, None)
         return me.tran(me, Iterate.iterating)
 
 
     def iterating(me, event):
         sig = event.signal
-        if sig == farc.Signal.ENTRY:
+        if sig == ufarc.Signal.ENTRY:
             print("iterating")
             me.count = 10
             me.postFIFO(me.iter_evt)
             return me.handled(me, event)
 
-        elif sig == farc.Signal.ITERATE:
+        elif sig == ufarc.Signal.ITERATE:
             print(me.count)
 
             if me.count == 0:
@@ -42,9 +42,9 @@ class Iterate(farc.Ahsm):
 
     def done(me, event):
         sig = event.signal
-        if sig == farc.Signal.ENTRY:
+        if sig == ufarc.Signal.ENTRY:
             print("done")
-            farc.Framework.stop()
+            ufarc.Framework.stop()
             return me.handled(me, event)
 
         return me.super(me, me.top)
