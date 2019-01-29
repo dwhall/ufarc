@@ -4,8 +4,6 @@ Copyright 2017 Dean Hall.  See LICENSE file for details.
 
 import uasyncio
 import math
-import signal
-import sys
 
 from .Signal import SIGNAL
 from .Event import EVENT
@@ -136,9 +134,9 @@ class Framework(object):
 
         # If an event already occupies this expiration time,
         # increase this event's expiration by the smallest measurable amount
-        while expiration in Framework._time_events.keys():
-            m, e = math.frexp(expiration)
-            expiration = (m + sys.float_info.epsilon) * 2**e
+#        while expiration in Framework._time_events.keys():
+#            m, e = math.frexp(expiration)
+#            expiration = (m + sys.float_info.epsilon) * 2**e
         Framework._time_events[expiration] = tm_event
 
         # If this is the only active TimeEvent, schedule its callback
