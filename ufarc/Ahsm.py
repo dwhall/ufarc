@@ -18,7 +18,7 @@ class Ahsm(Hsm):
         self.mq = []
         self.init(self, initEvent)
         # Run to completion
-        Framework._event_loop.call_soon_threadsafe(Framework.run)
+        Framework.rtc()
 
     def postLIFO(self, evt):
         self.mq.append(evt)

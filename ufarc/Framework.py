@@ -68,7 +68,7 @@ class Framework(object):
             for act in Framework._subscriber_table[event[Event.SIG_IDX]]:
                 act.postFIFO(event)
         # Run to completion
-        Framework._event_loop.call_soon_threadsafe(Framework.run)
+        Framework.rtc()
 
 
     @staticmethod
@@ -203,7 +203,7 @@ class Framework(object):
                 next_expiration)
 
         # Run to completion
-        Framework._event_loop.call_soon_threadsafe(Framework.run)
+        Framework.rtc()
 
 
     @staticmethod
@@ -234,6 +234,14 @@ class Framework(object):
                     break
             if allQueuesEmpty:
                 return
+
+
+    @staticmethod
+    def rtc():
+        """Runs a state machine handler to completion
+        in an asyncio's call_soon_threadsafe context.
+        """
+        Framework._event_loop.call_soon_threadsafe(Framework.run)
 
 
     @staticmethod
