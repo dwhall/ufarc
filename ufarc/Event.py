@@ -16,5 +16,8 @@ ENTRY = (SIGNAL.ENTRY, None)
 EXIT = (SIGNAL.EXIT, None)
 INIT = (SIGNAL.INIT, None)
 
+# Create the SIGTERM event that helps Exit state machines
+SIGTERM = (SIGNAL.SIGTERM, None)
+
 # The order of this tuple MUST match their respective signals
 reserved = (EMPTY, ENTRY, EXIT, INIT)

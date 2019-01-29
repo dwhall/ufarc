@@ -50,3 +50,4 @@ SIGNAL.register("EMPTY") # 0
 SIGNAL.register("ENTRY") # 1
 SIGNAL.register("EXIT")  # 2
 SIGNAL.register("INIT")  # 3
+SIGNAL.register("SIGTERM") # To Exit all states

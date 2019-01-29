@@ -60,6 +60,12 @@ class Hsm(object):
         """This is the default state handler.
         This handler ignores all signals.
         """
+        sig = event[Event.SIG_IDX]
+
+        # Handle SIGTERM to Exit the state machine
+        if sig == SIGNAL.SIGTERM:
+            return Hsm.RET_HANDLED
+
         # All events are quietly ignored
         return Hsm.RET_IGNORED # p. 165
 
