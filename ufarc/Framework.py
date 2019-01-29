@@ -3,7 +3,6 @@ Copyright 2017 Dean Hall.  See LICENSE file for details.
 """
 
 import uasyncio
-import math
 
 from .Signal import SIGNAL
 from . import Event
@@ -246,15 +245,14 @@ class Framework(object):
 
     @staticmethod
     def run_forever():
-        """Calls uasyncio.run_forever() within a try/finally
+        """Calls uasyncio's event loop's run_forever() within a try/finally
         to ensure state machines' exit handlers are executed.
         """
-        loop = uasyncio.get_event_loop()
         try:
-            loop.run_forever()
+            Framework._event_loop.run_forever()
         finally:
             Framework.stop()
-            loop.close()
+            Framework._event_loop.close()
 
 
     @staticmethod
