@@ -2,8 +2,6 @@
 Copyright 2017 Dean Hall.  See LICENSE file for details.
 """
 
-import collections
-
 from .Hsm import Hsm
 from .Framework import Framework
 
@@ -17,7 +15,7 @@ class Ahsm(Hsm):
         # must set the priority before Framework.add() which uses the priority
         self.priority = priority
         Framework.add(self)
-        self.mq = collections.deque()
+        self.mq = []
         self.init(self, initEvent)
         # Run to completion
         Framework._event_loop.call_soon_threadsafe(Framework.run)
@@ -26,7 +24,7 @@ class Ahsm(Hsm):
         self.mq.append(evt)
 
     def postFIFO(self, evt):
-        self.mq.appendleft(evt)
+        self.mq.insert(0,evt)
 
     def pop_msg(self,):
         return self.mq.pop()
