@@ -245,6 +245,19 @@ class Framework(object):
 
 
     @staticmethod
+    def run_forever():
+        """Calls uasyncio.run_forever() within a try/finally
+        to ensure state machines' exit handlers are executed.
+        """
+        loop = uasyncio.get_event_loop()
+        try:
+            loop.run_forever()
+        finally:
+            Framework.stop()
+            loop.close()
+
+
+    @staticmethod
     def stop():
         """EXITs all Ahsms and stops the event loop.
         """

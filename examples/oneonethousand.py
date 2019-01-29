@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
 
-import uasyncio
-
 import ufarc
 
 
@@ -40,6 +38,4 @@ if __name__ == "__main__":
     ms = Mississippi(Mississippi.initial)
     ms.start(0)
 
-    loop = uasyncio.get_event_loop()
-    loop.run_forever()
-    loop.close()
+    ufarc.Framework.run_forever()

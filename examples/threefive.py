@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
 
-import uasyncio
-
 import ufarc
 
 
@@ -67,9 +65,4 @@ if __name__ == "__main__":
     three.start(3)
     five.start(5)
 
-    loop = uasyncio.get_event_loop()
-    try:
-        loop.run_forever()
-    except KeyboardInterrupt:
-        ufarc.Framework.stop()
-    loop.close()
+    ufarc.Framework.run_forever()
