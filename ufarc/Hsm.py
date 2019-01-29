@@ -3,7 +3,7 @@ Copyright 2017 Dean Hall.  See LICENSE file for details.
 """
 
 from .Signal import SIGNAL
-from .Event import EVENT
+from . import Event
 
 
 class Hsm(object):
@@ -41,11 +41,11 @@ class Hsm(object):
 
     # Helper functions to process reserved events through the current state
     @staticmethod
-    def trig(me, state, signal): return state(me, EVENT.reserved[signal])
+    def trig(me, state, signal): return state(me, Event.reserved[signal])
     @staticmethod
-    def enter(me, state): return state(me, EVENT.ENTRY)
+    def enter(me, state): return state(me, Event.ENTRY)
     @staticmethod
-    def exit(me, state): return state(me, EVENT.EXIT)
+    def exit(me, state): return state(me, Event.EXIT)
 
     # Other helper functions
     @staticmethod

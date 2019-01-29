@@ -107,12 +107,12 @@ class UdpRelayAhsm(ufarc.Ahsm):
     # Callbacks interact via messaging
     @staticmethod
     def on_datagram(data, addr):
-        e = ufarc.Event(ufarc.SIGNAL.NET_RXD, (data,addr))
+        e = (ufarc.SIGNAL.NET_RXD, (data,addr))
         ufarc.Framework.publish(e)
 
     @staticmethod
     def on_error(error):
-        e = ufarc.Event(ufarc.SIGNAL.NET_ERR, (error))
+        e = (ufarc.SIGNAL.NET_ERR, (error))
         ufarc.Framework.publish(e)
 
 

@@ -14,7 +14,7 @@ class Iterate(ufarc.Ahsm):
 
     def initial(me, event):
         print("initial")
-        me.iter_evt = ufarc.Event(ufarc.SIGNAL.ITERATE, None)
+        me.iter_evt = (ufarc.SIGNAL.ITERATE, None)
         return me.tran(me, Iterate.iterating)
 
 

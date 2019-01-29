@@ -6,7 +6,7 @@ import uasyncio
 import math
 
 from .Signal import SIGNAL
-from .Event import EVENT
+from . import Event
 from .Hsm import Hsm
 
 
@@ -260,7 +260,7 @@ class Framework(object):
 
         # Post SIGTERM to all Ahsms so they execute their EXIT handler
         for act in Framework._ahsm_registry:
-            Framework.post(EVENT.SIGTERM, act)
+            Framework.post(Event.SIGTERM, act)
 
         # Run to completion so each Ahsm will process SIGTERM
         Framework.run()
