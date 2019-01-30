@@ -21,9 +21,17 @@ class TimeEvent(object):
         self.value = None
 
 
+    # Make indexing a TimeEvent work like indexing an Event tuple
+    # where index 0 holds the signal and index 1 holds the value
+    def __len__(self,):
+        return 2
     def __getitem__(self, n):
         if n == 0:
             return self.signal
+        elif n == 1:
+            return self.value
+        else:
+            raise IndexError
 
 
     def postAt(self, ahsm, abs_time):

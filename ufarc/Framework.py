@@ -31,14 +31,14 @@ class Framework(object):
     # The dict's key is the priority (integer) and the value is the Ahsm.
     _priority_dict = {}
 
-    # The Framework maintains a group of TimeEvents in a dict.  The next
-    # expiration of the TimeEvent is the key and the event is the value.
-    # Only the event with the next expiration time is scheduled for the
+    # The Framework maintains a group of TimeEvents in a list.
+    # The entries in the list are ( expiration time, time event ).  Only
+    # the event with the next/smallest expiration time is scheduled for the
     # timeEventCallback().  As TimeEvents are added and removed, the scheduled
     # callback must be re-evaluated.  Periodic TimeEvents should only have
-    # one entry in the dict: the next expiration.  The timeEventCallback() will
-    # add a Periodic TimeEvent back into the dict with its next expiration.
-    _time_events = {}
+    # one entry in the list: the next expiration.  The timeEventCallback() will
+    # add a Periodic TimeEvent back into the list with its next expiration.
+    _time_events = []
 
     # When a TimeEvent is scheduled for the timeEventCallback(),
     # a handle is kept so that the callback may be cancelled if necessary.
@@ -90,17 +90,16 @@ class Framework(object):
         after the delay, delta.
         """
         expiration = Framework._event_loop.time() + delta
-        Framework.addTimeEventAt(tm_event, expiration)
+        Framework._insortTimeEvent(tm_event, expiration)
 
 
     @staticmethod
-    def addTimeEventAt(tm_event, abs_time):
+    def addTimeEventAt(tm_event, expiration):
         """Adds the TimeEvent to the list of time events in the Framework.
         The event will fire its signal (to the TimeEvent's target Ahsm)
         at the given absolute time (_event_loop.time()).
         """
-        assert tm_event not in Framework._time_events.values()
-        Framework._insortTimeEvent(tm_event, abs_time)
+        Framework._insortTimeEvent(tm_event, expiration)
 
 
     @staticmethod
@@ -113,31 +112,29 @@ class Framework(object):
         and make the identically-timed events fire in a FIFO fashion.
         """
         # If the event is to happen in the past, post it now
-        now = Framework._event_loop.time()
-        if expiration < now:
+        if expiration < Framework._event_loop.time():
             tm_event.ahsm.postFIFO(tm_event)
             # TODO: if periodic, need to schedule next?
-
-        # If an event already occupies this expiration time,
-        # increase this event's expiration by the smallest measurable amount
-#        while expiration in Framework._time_events.keys():
-#            m, e = math.frexp(expiration)
-#            expiration = (m + sys.float_info.epsilon) * 2**e
-        Framework._time_events[expiration] = tm_event
+            return
 
         # If this is the only active TimeEvent, schedule its callback
-        if len(Framework._time_events) == 1:
+        if len(Framework._time_events) == 0:
             Framework._tm_event_handle = Framework._event_loop.call_at(
                 expiration, Framework.timeEventCallback, tm_event, expiration)
 
-        # If there are other TimeEvents,
-        # check if this one should replace the scheduled one
-        else:
-            if expiration < min(Framework._time_events.keys()):
+        # If this event expires before the next one in the list,
+        # cancel any current event and schedule this one
+        elif expiration < Framework._time_events[0][0]:
+            if Framework._tm_event_handle:
                 Framework._tm_event_handle.cancel()
-                Framework._tm_event_handle = Framework._event_loop.call_at(
-                    expiration, Framework.timeEventCallback, tm_event,
-                    expiration)
+            Framework._tm_event_handle = Framework._event_loop.call_at(
+                expiration, Framework.timeEventCallback, tm_event,
+                expiration)
+
+        # Put this event in the list and sort the list by expiration
+        entry = (expiration, tm_event)
+        Framework._time_events.append(entry)
+        Framework._time_events.sort(key=lambda x: x[0])
 
 
     @staticmethod
@@ -146,27 +143,34 @@ class Framework(object):
         Cancels the TimeEvent's callback if there is one.
         Schedules the next event's callback if there is one.
         """
-        for k,v in Framework._time_events.items():
-            if v is tm_event:
+        assert len(Framework._time_events) > 0
 
-                # If the event being removed is scheduled for callback,
-                # cancel and schedule the next event if there is one
-                if k == min(Framework._time_events.keys()):
-                    del Framework._time_events[k]
-                    if Framework._tm_event_handle:
-                        Framework._tm_event_handle.cancel()
-                    if len(Framework._time_events) > 0:
-                        next_expiration = min(Framework._time_events.keys())
-                        next_event = Framework._time_events[next_expiration]
-                        Framework._tm_event_handle = \
-                            Framework._event_loop.call_at(
-                                next_expiration, Framework.timeEventCallback,
-                                next_event, next_expiration)
-                    else:
-                        Framework._tm_event_handle = None
-                else:
-                    del Framework._time_events[k]
-                break
+        # If the event being removed is scheduled for callback,
+        entry = Framework._time_events[0]
+        if tm_event == entry[1]:
+
+            # Remove the entry
+            del Framework._time_events[0]
+
+            # Cancel any active time event
+            if Framework._tm_event_handle:
+                Framework._tm_event_handle.cancel()
+                Framework._tm_event_handle = None
+
+            # Schedule the next event if there is one
+            if Framework._time_events:
+                next_expiration, next_event = Framework._time_events[0]
+                Framework._tm_event_handle = Framework._event_loop.call_at(
+                    next_expiration, Framework.timeEventCallback,
+                    next_event, next_expiration)
+
+        # Else (the event being removed is NOT scheduled for callback)
+        # so just remove the event
+        else:
+            for entry in Framework._time_events:
+                if tm_event == entry[1]:
+                    Framework._time_events.remove(entry)
+                    break
 
 
     @staticmethod
@@ -176,12 +180,9 @@ class Framework(object):
         If the TimeEvent is periodic, re-insort the event
         in the list of active time events.
         """
-        assert expiration in Framework._time_events.keys(), (
-            "Exp:%d _time_events.keys():%s" %
-            (expiration, Framework._time_events.keys()))
 
         # Remove this expired TimeEvent from the active list
-        del Framework._time_events[expiration]
+        del Framework._time_events[0]
         Framework._tm_event_handle = None
 
         # Post the event to the target Ahsm
@@ -195,8 +196,7 @@ class Framework(object):
         # If not set already and there are more events, set the next event callback
         if (Framework._tm_event_handle == None and
                 len(Framework._time_events) > 0):
-            next_expiration = min(Framework._time_events.keys())
-            next_event = Framework._time_events[next_expiration]
+            next_expiration, next_event = Framework._time_events[0]
             Framework._tm_event_handle = Framework._event_loop.call_at(
                 next_expiration, Framework.timeEventCallback, next_event,
                 next_expiration)
