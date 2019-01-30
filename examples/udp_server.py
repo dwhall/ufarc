@@ -55,7 +55,7 @@ class UdpRelayAhsm(ufarc.Ahsm):
             return me.handled(me, event)
 
         elif sig == ufarc.SIGNAL.NET_RXD:
-            me.latest_msg, me.latest_addr = event.value
+            me.latest_msg, me.latest_addr = event[ufarc.Event.VAL_IDX]
             print("RelayFrom(%s): %r" % (me.latest_addr, me.latest_msg.decode()))
             return me.tran(me, UdpRelayAhsm.relaying)
 
@@ -72,7 +72,7 @@ class UdpRelayAhsm(ufarc.Ahsm):
             return me.handled(me, event)
 
         elif sig == ufarc.SIGNAL.NET_RXD:
-            me.latest_msg, me.latest_addr = event.value
+            me.latest_msg, me.latest_addr = event[ufarc.Event.VAL_IDX]
             print("RelayFrom(%s): %r" % (me.latest_addr, me.latest_msg.decode()))
             return me.handled(me, event)
 
