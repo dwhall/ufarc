@@ -111,25 +111,32 @@ class Framework(object):
         to avoid a key collision in the Dict
         and make the identically-timed events fire in a FIFO fashion.
         """
-        # If the event is to happen in the past, post it now
-        if expiration < Framework._event_loop.time():
+        now = Framework._event_loop.time()
+
+        # If the expiration is to happen in the past, post it now
+        if expiration < now:
             tm_event.ahsm.postFIFO(tm_event)
-            # TODO: if periodic, need to schedule next?
-            return
 
-        # If this is the only active TimeEvent, schedule its callback
-        if len(Framework._time_events) == 0:
-            Framework._tm_event_handle = Framework._event_loop.call_at(
-                expiration, Framework.timeEventCallback, tm_event, expiration)
+            # If the time event is periodic, schedule its next expiration
+            if tm_event.interval > 0:
+                expiration = now + tm_event.interval
 
-        # If this event expires before the next one in the list,
-        # cancel any current event and schedule this one
-        elif expiration < Framework._time_events[0][0]:
-            if Framework._tm_event_handle:
-                Framework._tm_event_handle.cancel()
-            Framework._tm_event_handle = Framework._event_loop.call_at(
-                expiration, Framework.timeEventCallback, tm_event,
-                expiration)
+        # Else (the expiration is to happen in the future)
+        else:
+
+            # If this is the only active TimeEvent, schedule its callback
+            if len(Framework._time_events) == 0:
+                Framework._tm_event_handle = Framework._event_loop.call_at(
+                    expiration, Framework.timeEventCallback, tm_event, expiration)
+
+            # If this event expires before the next one in the list,
+            # cancel any current event and schedule this one
+            elif expiration < Framework._time_events[0][0]:
+                if Framework._tm_event_handle:
+                    Framework._tm_event_handle.cancel()
+                Framework._tm_event_handle = Framework._event_loop.call_at(
+                    expiration, Framework.timeEventCallback, tm_event,
+                    expiration)
 
         # Put this event in the list and sort the list by expiration
         entry = (expiration, tm_event)
