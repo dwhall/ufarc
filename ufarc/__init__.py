@@ -2,7 +2,7 @@
 # Copyright 2019 Dean Hall.  See LICENSE file for details.
 # """
 
-#Desktop debugging:
+#Desktop debug:
 #import asyncio as uasyncio
 import uasyncio
 
@@ -267,6 +267,10 @@ class Framework(object):
 
     _event_loop = uasyncio.get_event_loop()
 
+    # Desktop debug:
+    if not hasattr(_event_loop, "call_at_"):
+        _event_loop.call_at_ = _event_loop.call_at
+
     # The Framework maintains a registry of Ahsms in a list.
     _ahsm_registry = []
 
@@ -373,7 +377,7 @@ class Framework(object):
 
             # If this is the only active TimeEvent, schedule its callback
             if len(Framework._time_events) == 0:
-                Framework._tm_event_handle = Framework._event_loop.call_at(
+                Framework._tm_event_handle = Framework._event_loop.call_at_(
                     expiration, Framework.timeEventCallback, tm_event, expiration)
 
             # If this event expires before the next one in the list,
@@ -381,7 +385,7 @@ class Framework(object):
             elif expiration < Framework._time_events[0][0]:
                 if Framework._tm_event_handle:
                     Framework._tm_event_handle.cancel()
-                Framework._tm_event_handle = Framework._event_loop.call_at(
+                Framework._tm_event_handle = Framework._event_loop.call_at_(
                     expiration, Framework.timeEventCallback, tm_event,
                     expiration)
 
@@ -414,7 +418,7 @@ class Framework(object):
             # Schedule the next event if there is one
             if Framework._time_events:
                 next_expiration, next_event = Framework._time_events[0]
-                Framework._tm_event_handle = Framework._event_loop.call_at(
+                Framework._tm_event_handle = Framework._event_loop.call_at_(
                     next_expiration, Framework.timeEventCallback,
                     next_event, next_expiration)
 
@@ -451,7 +455,7 @@ class Framework(object):
         if (Framework._tm_event_handle == None and
                 len(Framework._time_events) > 0):
             next_expiration, next_event = Framework._time_events[0]
-            Framework._tm_event_handle = Framework._event_loop.call_at(
+            Framework._tm_event_handle = Framework._event_loop.call_at_(
                 next_expiration, Framework.timeEventCallback, next_event,
                 next_expiration)
 
@@ -492,9 +496,9 @@ class Framework(object):
     @staticmethod
     def rtc():
         # """Runs a state machine handler to completion
-        # in an asyncio's call_soon_threadsafe context.
+        # in an asyncio's call_soon context.
         # """
-        Framework._event_loop.call_soon_threadsafe(Framework.run)
+        Framework._event_loop.call_soon(Framework.run)
 
 
     @staticmethod
