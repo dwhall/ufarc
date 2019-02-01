@@ -40,7 +40,8 @@ class Signal(object):
             return sigid
 
 
-    def __getattr__(self, signame):
+    @staticmethod
+    def __getattr__(signame):
         assert type(signame) is str
         return Signal._registry[signame]
 
