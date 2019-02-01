@@ -1,6 +1,6 @@
-"""
-Copyright 2019 Dean Hall.  See LICENSE file for details.
-"""
+# """
+# Copyright 2019 Dean Hall.  See LICENSE file for details.
+# """
 
 #Desktop debugging:
 #import asyncio as uasyncio
@@ -8,10 +8,10 @@ import uasyncio
 
 
 class Signal(object):
-    """An asynchronous stimulus that triggers reactions.
-    A unique identifier that, along with a value, specifies an Event.
-    p. 154
-    """
+    # """An asynchronous stimulus that triggers reactions.
+    # A unique identifier that, along with a value, specifies an Event.
+    # p. 154
+    # """
 
     _registry = {}  # signame:str to sigid:int
     _lookup = []    # sigid:int to signame:str
@@ -19,16 +19,16 @@ class Signal(object):
 
     @staticmethod
     def exists(signame):
-        """Returns True if signame is in the Signal registry.
-        """
+        # """Returns True if signame is in the Signal registry.
+        # """
         return signame in Signal._registry
 
 
     @staticmethod
     def register(signame):
-        """Registers the signame if it is not already registered.
-        Returns the signal number for the signame.
-        """
+        # """Registers the signame if it is not already registered.
+        # Returns the signal number for the signame.
+        # """
         assert type(signame) is str
         if signame in Signal._registry:
             # TODO: emit warning that signal is already registrered
@@ -58,12 +58,12 @@ SIGNAL.register("SIGTERM") # To Exit all states
 
 
 class Event(object):
-    """A tuple holding ( signal, value ).
-    This class holds constant values of Events
-    defined by the system and used within ufarc
-    and by user state machines
-    """
-    # Event = namedtuple("Event", ["signal", "value"])
+    # """A tuple holding ( signal, value ).
+    # This class holds constant values of Events
+    # defined by the system and used within ufarc
+    # and by user state machines
+    # """
+
     # Constants to index into an Event tuple
     SIG_IDX = 0
     VAL_IDX = 1
@@ -82,12 +82,12 @@ class Event(object):
 
 
 class Hsm(object):
-    """A Hierarchical State Machine (HSM).
-    Full support for hierarchical state nesting.
-    Guaranteed entry/exit action execution on arbitrary state transitions.
-    Full support of nested initial transitions.
-    Support for events with arbitrary parameters.
-    """
+    # """A Hierarchical State Machine (HSM).
+    # Full support for hierarchical state nesting.
+    # Guaranteed entry/exit action execution on arbitrary state transitions.
+    # Full support of nested initial transitions.
+    # Support for events with arbitrary parameters.
+    # """
 
     # Every state handler must return one of these values
     RET_HANDLED = 0
@@ -103,9 +103,10 @@ class Hsm(object):
 
 
     def __init__(self, initialState):
-        """Sets this Hsm's current state to Hsm.top(), the default state
-        and stores the given initial state.
-        """
+        # """Sets this Hsm's current state to Hsm.top(), the default state
+        # and stores the given initial state.
+        # """
+
         # self.state is the Hsm's current active state.
         # This instance variable references the message handler (method)
         # that will be called whenever a message is sent to this Hsm.
@@ -132,9 +133,9 @@ class Hsm(object):
 
     @staticmethod
     def top(me, event):
-        """This is the default state handler.
-        This handler ignores all signals.
-        """
+        # """This is the default state handler.
+        # This handler ignores all signals.
+        # """
         sig = event[Event.SIG_IDX]
 
         # Handle SIGTERM to Exit the state machine
@@ -147,11 +148,11 @@ class Hsm(object):
 
     @staticmethod
     def init(me, event = None):
-        """Transitions to the initial state.  Follows any INIT transitions
-        from the inital state and performs ENTRY actions as it proceeds.
-        Use this to pass any parameters to initialize the state machine.
-        p. 172
-        """
+        # """Transitions to the initial state.  Follows any INIT transitions
+        # from the inital state and performs ENTRY actions as it proceeds.
+        # Use this to pass any parameters to initialize the state machine.
+        # p. 172
+        # """
 
         # The initial state MUST transition to another state
         assert me.initialState(me, event) == Hsm.RET_TRAN
@@ -192,11 +193,12 @@ class Hsm(object):
 
     @staticmethod
     def dispatch(me, event):
-        """Dispatches the given event to this Hsm.
-        Follows the application's state transitions
-        until the event is handled or top() is reached
-        p. 174
-        """
+        # """Dispatches the given event to this Hsm.
+        # Follows the application's state transitions
+        # until the event is handled or top() is reached
+        # p. 174
+        # """
+
         # Save the current state
         t = me.state
 
@@ -255,13 +257,13 @@ class Hsm(object):
 
 
 class Framework(object):
-    """Framework is a composite class that holds:
-    - the uasyncio event loop
-    - the registry of AHSMs
-    - the set of TimeEvents
-    - the handle to the next TimeEvent
-    - the table subscriptions to events
-    """
+    # """Framework is a composite class that holds:
+    # - the uasyncio event loop
+    # - the registry of AHSMs
+    # - the set of TimeEvents
+    # - the handle to the next TimeEvent
+    # - the table subscriptions to events
+    # """
 
     _event_loop = uasyncio.get_event_loop()
 
@@ -297,17 +299,17 @@ class Framework(object):
 
     @staticmethod
     def post(event, ahsm):
-        """Posts the event to the given Ahsm's event queue.
-        """
+        # """Posts the event to the given Ahsm's event queue.
+        # """
         assert isinstance(ahsm, Hsm)
         ahsm.postFIFO(event)
 
 
     @staticmethod
     def publish(event):
-        """Posts the event to the message queue of every Ahsm
-        that is subscribed to the event's signal.
-        """
+        # """Posts the event to the message queue of every Ahsm
+        # that is subscribed to the event's signal.
+        # """
         if event[Event.SIG_IDX] in Framework._subscriber_table:
             for ahsm in Framework._subscriber_table[event[Event.SIG_IDX]]:
                 ahsm.postFIFO(event)
@@ -317,11 +319,11 @@ class Framework(object):
 
     @staticmethod
     def subscribe(signame, ahsm):
-        """Adds the given Ahsm to the subscriber table list
-        for the given signal.  The argument, signame, is a string of the name
-        of the Signal to which the Ahsm is subscribing.  Using a string allows
-        the Signal to be created in the registry if it is not already.
-        """
+        # """Adds the given Ahsm to the subscriber table list
+        # for the given signal.  The argument, signame, is a string of the name
+        # of the Signal to which the Ahsm is subscribing.  Using a string allows
+        # the Signal to be created in the registry if it is not already.
+        # """
         sigid = SIGNAL.register(signame)
         if sigid not in Framework._subscriber_table:
             Framework._subscriber_table[sigid] = []
@@ -330,32 +332,32 @@ class Framework(object):
 
     @staticmethod
     def addTimeEvent(tm_event, delta):
-        """Adds the TimeEvent to the list of time events in the Framework.
-        The event will fire its signal (to the TimeEvent's target Ahsm)
-        after the delay, delta.
-        """
+        # """Adds the TimeEvent to the list of time events in the Framework.
+        # The event will fire its signal (to the TimeEvent's target Ahsm)
+        # after the delay, delta.
+        # """
         expiration = Framework._event_loop.time() + delta
         Framework._insortTimeEvent(tm_event, expiration)
 
 
     @staticmethod
     def addTimeEventAt(tm_event, expiration):
-        """Adds the TimeEvent to the list of time events in the Framework.
-        The event will fire its signal (to the TimeEvent's target Ahsm)
-        at the given absolute time (_event_loop.time()).
-        """
+        # """Adds the TimeEvent to the list of time events in the Framework.
+        # The event will fire its signal (to the TimeEvent's target Ahsm)
+        # at the given absolute time (_event_loop.time()).
+        # """
         Framework._insortTimeEvent(tm_event, expiration)
 
 
     @staticmethod
     def _insortTimeEvent(tm_event, expiration):
-        """Inserts a TimeEvent into the list of time events,
-        sorted by the next expiration of the timer.
-        If the expiration time matches an existing expiration,
-        we add the smallest amount of time to the given expiration
-        to avoid a key collision in the Dict
-        and make the identically-timed events fire in a FIFO fashion.
-        """
+        # """Inserts a TimeEvent into the list of time events,
+        # sorted by the next expiration of the timer.
+        # If the expiration time matches an existing expiration,
+        # we add the smallest amount of time to the given expiration
+        # to avoid a key collision in the Dict
+        # and make the identically-timed events fire in a FIFO fashion.
+        # """
         now = Framework._event_loop.time()
 
         # If the expiration is to happen in the past, post it now
@@ -391,10 +393,10 @@ class Framework(object):
 
     @staticmethod
     def removeTimeEvent(tm_event):
-        """Removes the TimeEvent from the list of active time events.
-        Cancels the TimeEvent's callback if there is one.
-        Schedules the next event's callback if there is one.
-        """
+        # """Removes the TimeEvent from the list of active time events.
+        # Cancels the TimeEvent's callback if there is one.
+        # Schedules the next event's callback if there is one.
+        # """
         assert len(Framework._time_events) > 0
 
         # If the event being removed is scheduled for callback,
@@ -427,11 +429,11 @@ class Framework(object):
 
     @staticmethod
     def timeEventCallback(tm_event, expiration):
-        """The callback function for all TimeEvents.
-        Posts the event to the event's target Ahsm.
-        If the TimeEvent is periodic, re-insort the event
-        in the list of active time events.
-        """
+        # """The callback function for all TimeEvents.
+        # Posts the event to the event's target Ahsm.
+        # If the TimeEvent is periodic, re-insort the event
+        # in the list of active time events.
+        # """
 
         # Remove this expired TimeEvent from the active list
         del Framework._time_events[0]
@@ -459,8 +461,8 @@ class Framework(object):
 
     @staticmethod
     def add(ahsm):
-        """Makes the framework aware of the given Ahsm.
-        """
+        # """Makes the framework aware of the given Ahsm.
+        # """
         Framework._ahsm_registry.append(ahsm)
         assert ahsm.priority not in Framework._priority_dict, (
                 "Priority MUST be unique")
@@ -469,9 +471,9 @@ class Framework(object):
 
     @staticmethod
     def run():
-        """Dispatches an event to the highest priority Ahsm
-        until all event queues are empty (i.e. Run To Completion).
-        """
+        # """Dispatches an event to the highest priority Ahsm
+        # until all event queues are empty (i.e. Run To Completion).
+        # """
         getPriority = lambda x : x.priority
 
         while True:
@@ -489,17 +491,17 @@ class Framework(object):
 
     @staticmethod
     def rtc():
-        """Runs a state machine handler to completion
-        in an asyncio's call_soon_threadsafe context.
-        """
+        # """Runs a state machine handler to completion
+        # in an asyncio's call_soon_threadsafe context.
+        # """
         Framework._event_loop.call_soon_threadsafe(Framework.run)
 
 
     @staticmethod
     def run_forever():
-        """Calls uasyncio's event loop's run_forever() within a try/finally
-        to ensure state machines' exit handlers are executed.
-        """
+        # """Calls uasyncio's event loop's run_forever() within a try/finally
+        # to ensure state machines' exit handlers are executed.
+        # """
         try:
             Framework._event_loop.run_forever()
         finally:
@@ -509,8 +511,8 @@ class Framework(object):
 
     @staticmethod
     def stop():
-        """EXITs all Ahsms and stops the event loop.
-        """
+        # """EXITs all Ahsms and stops the event loop.
+        # """
         # Disable the timer callback
         if Framework._tm_event_handle:
             Framework._tm_event_handle.cancel()
@@ -526,9 +528,9 @@ class Framework(object):
 
 
 class Ahsm(Hsm):
-    """An Augmented Hierarchical State Machine (AHSM); a.k.a. ActiveObject/AO.
-    Adds a priority, message queue and methods to work with the queue.
-    """
+    # """An Augmented Hierarchical State Machine (AHSM); a.k.a. ActiveObject/AO.
+    # Adds a priority, message queue and methods to work with the queue.
+    # """
 
     def start(self, priority, initEvent=None):
         # must set the priority before Framework.add() which uses the priority
@@ -553,12 +555,12 @@ class Ahsm(Hsm):
 
 
 class TimeEvent(object):
-    """TimeEvent is a composite class that contains an Event.
-    A TimeEvent is created by the application and added to the Framework.
-    The Framework then emits the event after the given delay.
-    A one-shot TimeEvent is created by calling either postAt() or postIn().
-    A periodic TimeEvent is created by calling the postEvery() method.
-    """
+    # """TimeEvent is a composite class that contains an Event.
+    # A TimeEvent is created by the application and added to the Framework.
+    # The Framework then emits the event after the given delay.
+    # A one-shot TimeEvent is created by calling either postAt() or postIn().
+    # A periodic TimeEvent is created by calling the postEvery() method.
+    # """
     def __init__(self, signame):
         assert type(signame) == str
         self.signal = SIGNAL.register(signame)
@@ -579,8 +581,8 @@ class TimeEvent(object):
 
 
     def postAt(self, ahsm, abs_time):
-        """Posts this TimeEvent to the given Ahsm at a specified time.
-        """
+        # """Posts this TimeEvent to the given Ahsm at a specified time.
+        # """
         assert issubclass(type(ahsm), Ahsm)
         self.ahsm = ahsm
         self.interval = 0
@@ -588,8 +590,8 @@ class TimeEvent(object):
 
 
     def postIn(self, ahsm, delta):
-        """Posts this TimeEvent to the given Ahsm after the time delta.
-        """
+        # """Posts this TimeEvent to the given Ahsm after the time delta.
+        # """
         assert issubclass(type(ahsm), Ahsm)
         self.ahsm = ahsm
         self.interval = 0
@@ -597,9 +599,9 @@ class TimeEvent(object):
 
 
     def postEvery(self, ahsm, delta):
-        """Posts this TimeEvent to the given Ahsm after the time delta
-        and every time delta thereafter until disarmed.
-        """
+        # """Posts this TimeEvent to the given Ahsm after the time delta
+        # and every time delta thereafter until disarmed.
+        # """
         assert issubclass(type(ahsm), Ahsm)
         self.ahsm = ahsm
         self.interval = delta
@@ -607,7 +609,7 @@ class TimeEvent(object):
 
 
     def disarm(self):
-        """Removes this TimeEvent from the Framework's active time events.
-        """
+        # """Removes this TimeEvent from the Framework's active time events.
+        # """
         self.ahsm = None
         Framework.removeTimeEvent(self)
