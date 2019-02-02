@@ -18,8 +18,8 @@ class Mississippi(ufarc.Ahsm):
         if sig == ufarc.SIGNAL.ENTRY:
             print("counting enter")
             me._count = 0
-            me.teCount.postEvery(me, 0.001)
-            me.tePrint.postEvery(me, 1.000)
+            me.teCount.postEvery(me, 10) # millisecond
+            me.tePrint.postEvery(me, 1000) # milliseconds
             return me.handled(me, event)
 
         elif sig == ufarc.SIGNAL.COUNT:

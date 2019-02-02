@@ -20,7 +20,7 @@ class Countdown(ufarc.Ahsm):
         sig = event[ufarc.Event.SIG_IDX]
         if sig == ufarc.SIGNAL.ENTRY:
             print("counting")
-            me.te.postIn(me, 1.0)
+            me.te.postIn(me, 1000) # milliseconds
             return me.handled(me, event)
 
         elif sig == ufarc.SIGNAL.TIME_TICK:
@@ -30,7 +30,7 @@ class Countdown(ufarc.Ahsm):
                 return me.tran(me, Countdown.done)
             else:
                 me.count -= 1
-                me.te.postIn(me, 1.0)
+                me.te.postIn(me, 1000) # milliseconds
                 return me.handled(me, event)
 
         return me.super(me, me.top)
