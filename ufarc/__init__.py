@@ -379,7 +379,7 @@ class Framework(object):
             # If this is the only active TimeEvent, schedule its callback
             if len(Framework._time_events) == 0:
                 Framework._tm_event_handle = Framework._event_loop.call_at_(
-                    expiration, Framework.timeEventCallback, tm_event, expiration)
+                    expiration, Framework.timeEventCallback, (tm_event, expiration))
 
             # If this event expires before the next one in the list,
             # cancel any current event and schedule this one
@@ -387,8 +387,8 @@ class Framework(object):
                 if Framework._tm_event_handle:
                     Framework._tm_event_handle.cancel()
                 Framework._tm_event_handle = Framework._event_loop.call_at_(
-                    expiration, Framework.timeEventCallback, tm_event,
-                    expiration)
+                    expiration, Framework.timeEventCallback, (tm_event,
+                    expiration))
 
         # Put this event in the list and sort the list by expiration
         entry = (expiration, tm_event)
@@ -421,7 +421,7 @@ class Framework(object):
                 next_expiration, next_event = Framework._time_events[0]
                 Framework._tm_event_handle = Framework._event_loop.call_at_(
                     next_expiration, Framework.timeEventCallback,
-                    next_event, next_expiration)
+                    (next_event, next_expiration))
 
         # Else (the event being removed is NOT scheduled for callback)
         # so just remove the event
@@ -457,8 +457,8 @@ class Framework(object):
                 len(Framework._time_events) > 0):
             next_expiration, next_event = Framework._time_events[0]
             Framework._tm_event_handle = Framework._event_loop.call_at_(
-                next_expiration, Framework.timeEventCallback, next_event,
-                next_expiration)
+                next_expiration, Framework.timeEventCallback, (next_event,
+                next_expiration))
 
         # Run to completion
         Framework.rtc()
