@@ -1,8 +1,17 @@
 # ufarc
 
-ufarc is a fork and rewrite of farc for [MicroPython](http://micropython.org).
+ufarc is a fork and rewrite of [farc](https://github.com/dwhall/farc)
+in order to run on [MicroPython](http://micropython.org).
 
-Known Issue: Nothing works yet.
+Known Issue: Some examples fail due to
+
+```python
+  File "/Users/dwhall/.micropython/lib/ufarc/__init__.py", line 513, in run_forever
+  File "/Users/dwhall/.micropython/lib/ufarc/__init__.py", line 532, in stop
+  File "uasyncio/core.py", line 183, in stop
+  File "uasyncio/core.py", line 48, in call_soon
+IndexError: full
+```
 
 ## farc
 
